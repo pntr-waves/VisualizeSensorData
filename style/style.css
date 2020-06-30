@@ -46,11 +46,26 @@ a:link{
     flex-grow:9;
     
 }
+.overview{
+    display: flex;
+    flex-direction: row;
+    /* align-items: center; */
+    justify-content: center;
+}
 
 .baseCircle{
     height: 200px;
     width: 200px;
     border-radius: 50%;
+    margin-right: 30px;
+    align-items: center;
+    justify-content: center;
+    /* text-align: center; */
+    display: flex;
+    font-size: 30px;
+    color: white;
 }
+
+
 
 

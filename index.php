@@ -38,14 +38,16 @@
                 </div>
                 <div class="content-right">
                     <h2>OVERVIEW</h2>
-                    <div id="circleLight" class="baseCircle center">
-                        <div id="txtLight" class="value">1</div>
-                    </div>
-                    <div id="circleHumidity" class="baseCircle center">
-                        <div id="txtHumidity" class="value">1</div>
-                    </div>
-                    <div id="circleTemperature" class="baseCircle center">
-                        <div id="txtTemperature" class="value">1</div>
+                    <div class="overview">
+                        <div id="circleLight" class="baseCircle center">
+                            <div id="txtLight" class="value">1</div>
+                        </div>
+                        <div id="circleHumidity" class="baseCircle center">
+                            <div id="txtHumidity" class="value">1</div>
+                        </div>
+                        <div id="circleTemperature" class="baseCircle center">
+                            <div id="txtTemperature" class="value">1</div>
+                        </div>
                     </div>
                 </div>
             </div>
