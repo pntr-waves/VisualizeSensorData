@@ -6,6 +6,8 @@
         <script src="https://kit.fontawesome.com/a076d05399.js"></script>
         <link rel="stylesheet" type="text/css" href="./style/style.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>  
+        <script src="moment.js"></script>
     </head>
     <body>
         <div class="content">
@@ -18,36 +20,54 @@
             </div>
             <div class="content-behind-navbar">
                 <div class="content-nav-left">
-                    <div class="unit-nav-left">
-                        <i class="fa fa-home"></i>
-                        <a class="row-nav-left" href="#">HOME</a>
-                    </div>
-                    <div class="unit-nav-left">
-                        <i class="fas fa-chart-area"></i>
-                        <a class="row-nav-left" href="#">REAL-TIME LINE CHART</a>
-                    </div>
-                    <div class="unit-nav-left sub">
-                        <a class="row-nav-left" href="#">LIGHT</a>
-                    </div>
-                    <div class="unit-nav-left sub">
-                        <a class="row-nav-left" href="#">HUMIDITY</a>
-                    </div>
-                    <div class="unit-nav-left sub">
-                        <a class="row-nav-left" href="#">TEMPERATURE</a>
+                    <div class="cover-nav-left">
+                        <div class="unit-nav-left">
+                            <i class="fa fa-home"></i>
+                            <a class="row-nav-left" href="#overview">HOME</a>
+                        </div>
+                        <div class="unit-nav-left">
+                            <i class="fas fa-chart-area"></i>
+                            <a class="row-nav-left" href="#">REAL-TIME LINE CHART</a>
+                        </div>
+                        <div class="unit-nav-left sub">
+                            <a class="row-nav-left" href="#">LIGHT</a>
+                        </div>
+                        <div class="unit-nav-left sub">
+                            <a class="row-nav-left" href="#">HUMIDITY</a>
+                        </div>
+                        <div class="unit-nav-left sub">
+                            <a class="row-nav-left" href="#">TEMPERATURE</a>
+                        </div>
                     </div>
                 </div>
                 <div class="content-right">
-                    <h2>OVERVIEW</h2>
-                    <div class="overview">
-                        <div id="circleLight" class="baseCircle center">
-                            <div id="txtLight" class="value">1</div>
-                        </div>
-                        <div id="circleHumidity" class="baseCircle center">
-                            <div id="txtHumidity" class="value">1</div>
-                        </div>
-                        <div id="circleTemperature" class="baseCircle center">
-                            <div id="txtTemperature" class="value">1</div>
-                        </div>
+                    <h1 style="padding-left: 50px;">OVERVIEW</h1>
+                    <table id="overview" class="overview">
+                        <tr>
+                            <td>
+                                <div id="circleLight" class="baseCircle center">
+                                    <div id="txtLight" class="value">1</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div id="circleHumidity" class="baseCircle center">
+                                    <div id="txtHumidity" class="value">1</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div id="circleTemperature" class="baseCircle center">
+                                    <div id="txtTemperature" class="value">1</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr style="font-weight: bold";>
+                            <td style="padding-left: 81px;">Light</td>
+                            <td style="padding-left: 70px;">Humidity</td>
+                            <td style="padding-left: 52px;">Temperature</td>
+                        </tr>
+                    </table>
+                    <div class="chart light">
+                        <div id="chartContainer" style="height: 370px; width:50%;"></div>
                     </div>
                 </div>
             </div>
@@ -61,20 +81,36 @@
 
             function loadData(){
                 $.get("http://localhost:8080/lab6/getLastestData.php", 
-                function(data){
-                    var rows = jQuery.parseJSON(data);
-                    $.each(rows, function(index, row){
-                        var light = row.l;
-                        var humidity = row.h;
-                        var temperature = row.t;
+                    function(data){
+                        var rows = jQuery.parseJSON(data);
+                        $.each(rows, function(index, row){
+                            var light = row.l;
+                            var humidity = row.h;
+                            var temperature = row.t;
 
-                        updateView('circleLight', 'txtLight', 150, 180, light);
-                        updateView('circleHumidity', 'txtHumidity', 50, 70, humidity);
-                        updateView('circleTemperature', 'txtTemperature', 20, 40, temperature);
-                    }); 
+                            updateView('circleLight', 'txtLight', 150, 180, light);
+                            updateView('circleHumidity', 'txtHumidity', 50, 70, humidity);
+                            updateView('circleTemperature', 'txtTemperature', 20, 40, temperature);
+                        }); 
                 }).fail(function(){
                     alert("Oop! An error was found when getting data from server");
                 });
+
+                $.get("http://localhost:8080/lab6/get_giatri.php",
+                    function(data){
+                        var rows = jQuery.parseJSON(data);
+                        var dpLight=[], dpHumidity=[], dpTemperature=[];
+                        $.each(rows, function(index, row){
+                            dpLight.push({x:row.date, y:parseInt(row.l)*1000});
+                            dpHumidity.push({x:row.date, y:parseInt(row.h)*1000});
+                            dpTemperature.push({x:row.date, y:parseInt(row.t)*1000});
+                        });
+                        console.log(dpLight);
+                        window.onload = updateChart("chartContainer", "FROM SENSOR LIGHT", "Lux", dpLight);
+                }).fail(function(){
+                    alert("Oop! An error was found when getting data from server");
+                });
+                
             };
 
             function updateView(circle, txt, mediumValue, highValue, value) {
@@ -89,6 +125,33 @@
                     $('#'+circle).css('background-color', 'red');
                 }
     
+            };
+            //chart 
+            function updateChart(id, text, textY, dp) {
+
+                var chart = new CanvasJS.Chart(id, {
+                    animationEnabled: true,
+                    title: {
+                        text: text
+                    },
+                    axisX: {
+                        title: "Time"
+                    },
+                    axisY: {
+                        title: textY
+                    },
+                    data: [{
+                        type: "line",
+                        name: "CPU Utilization",
+                        connectNullData: true,
+                        //nullDataLineDashType: "solid",
+                        xValueType: "dateTime",
+                        xValueFormatString: "hh:mm:ss",
+                        yValueFormatString: "#,##0.##\"%\"",
+                        dataPoints: dp
+                    }]
+                });
+                chart.render();
             };
         </script>
     </body>

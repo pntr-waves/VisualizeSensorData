@@ -17,7 +17,7 @@ a:link{
     align-items: center;
 }
 .nav-bar.content{
-    margin: 0px 0px 0px 15px;
+    padding: 0px 0px 0px 15px;
     color:white;
 }
 
@@ -28,7 +28,7 @@ a:link{
 }
 
 .unit-nav-left{
-    margin: 10px 0px 0px 15px;
+    padding: 0px 0px 0px 15px;
     border-bottom: 1px solid #e2dbda;
     height: 30px;
 }
@@ -36,6 +36,10 @@ a:link{
 .content-nav-left{
     flex-grow: 1;
     background-color: #888;
+}
+
+.cover-nav-left{
+    margin-top: 10px;
 }
 
 .row-nav-left{
@@ -51,20 +55,30 @@ a:link{
     flex-direction: row;
     /* align-items: center; */
     justify-content: center;
+    margin-bottom: 1;
+    padding-left: 50px;
 }
 
 .baseCircle{
     height: 200px;
     width: 200px;
     border-radius: 50%;
-    margin-right: 30px;
+    margin-right: 60px;
     align-items: center;
     justify-content: center;
     /* text-align: center; */
     display: flex;
-    font-size: 30px;
+    font-size: 50px;
     color: white;
 }
+
+.unit-nav-left.sub{
+    padding-left: 50px;
+}
+.unit-nav-left:hover{
+    background-color: rgb(236, 218, 218);
+}
+
 
 
 

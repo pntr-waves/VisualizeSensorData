@@ -7,7 +7,7 @@
     $a = array();
     while($row = mysqli_fetch_assoc($data)){
         array_push($a, new Data(
-            $row['date'],
+            strtotime($row['date']),
             $row['note_id'],
             $row['h'],
             $row['t'],
