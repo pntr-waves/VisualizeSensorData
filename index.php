@@ -66,8 +66,14 @@
                             <td style="padding-left: 52px;">Temperature</td>
                         </tr>
                     </table>
-                    <div class="chart light">
-                        <div id="chartContainer" style="height: 370px; width:50%;"></div>
+                    <div class="chart">
+                        <div id="chart_light" style="height: 370px; width:50%;"></div>
+                    </div>
+                    <div class="chart">
+                        <div id="chart_humidity" style="height: 370px; width:50%;"></div>
+                    </div>
+                    <div class="chart">
+                        <div id="chart_temperature" style="height: 370px; width:50%;"></div>
                     </div>
                 </div>
             </div>
@@ -101,12 +107,14 @@
                         var rows = jQuery.parseJSON(data);
                         var dpLight=[], dpHumidity=[], dpTemperature=[];
                         $.each(rows, function(index, row){
-                            dpLight.push({x:row.date, y:parseInt(row.l)*1000});
-                            dpHumidity.push({x:row.date, y:parseInt(row.h)*1000});
-                            dpTemperature.push({x:row.date, y:parseInt(row.t)*1000});
+                            dpLight.push({x:row.date*1000, y:parseInt(row.l)});
+                            dpHumidity.push({x:row.date*1000, y:parseInt(row.h)});
+                            dpTemperature.push({x:row.date*1000, y:parseInt(row.t)});
                         });
                         console.log(dpLight);
-                        window.onload = updateChart("chartContainer", "FROM SENSOR LIGHT", "Lux", dpLight);
+                        window.onload = updateChart("chart_light", "FROM SENSOR LIGHT", "Lux", dpLight);
+                        window.onload = updateChart("chart_humidity", "FROM SENSOR HUMIDITY","%", dpHumidity);
+                        window.onload = updateChart("chart_temperature", "FROM SENSOR TEMPERATURE","C", dpHumidity);
                 }).fail(function(){
                     alert("Oop! An error was found when getting data from server");
                 });
@@ -139,6 +147,7 @@
                     },
                     axisY: {
                         title: textY
+
                     },
                     data: [{
                         type: "line",
@@ -146,7 +155,7 @@
                         connectNullData: true,
                         //nullDataLineDashType: "solid",
                         xValueType: "dateTime",
-                        xValueFormatString: "hh:mm:ss",
+                        xValueFormatString: "DD MMM hh:mm TT",
                         yValueFormatString: "#,##0.##\"%\"",
                         dataPoints: dp
                     }]
